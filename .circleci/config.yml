@@ -19,6 +19,8 @@ commands:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "./backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "./backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "./backend/.env"
+            echo $TYPEORM_HOST
+            echo ${TYPEORM_HOST}
 
   destroy-environment:
     description: Destroy backend and frontend cloudformation stacks given a workflow ID.
@@ -271,7 +273,6 @@ jobs:
           name: Run migrations
           command: |
             cd ./backend
-            pwd
             npm run migrations > migrations_log.txt
             cat ./migrations_log.txt
       - run:
