@@ -113,6 +113,7 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: C050JHUBMNE
           template: basic_fail_1
 
 
