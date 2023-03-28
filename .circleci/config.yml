@@ -42,6 +42,7 @@ commands:
           command: |
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflowID >>
 
+
 jobs:
   build-frontend:
     docker:
@@ -224,6 +225,41 @@ jobs:
       - destroy-environment:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}   
 
+  run-migrations:
+    docker:
+      # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - attach_workspace:
+          at: .
+      - create-dotenv-file
+      - run:
+          name: Run migrations
+          command: |
+            d ./backend
+            pwd
+            npm run migrations > migrations_log.txt
+            cat ./migrations_log.txt
+      - run:
+          name: Send migration results to memstash
+          command: |
+            if grep "has been executed successfully" ./backend/migrations_log.txt;
+            then
+              echo "Database migration has been executed successfully"
+              curl -H "Content-Type: text/plain" -H "token: 7079126b-54c1-4ae1-b7cf-577d8a27c76f" --request PUT --data "success" https://api.memstash.io/values/DB_MIGRATION_STATUS_${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              echo "Database migration has failed, verify DB setup!"
+              curl -H "Content-Type: text/plain" -H "token: 7079126b-54c1-4ae1-b7cf-577d8a27c76f" --request PUT --data "failure" https://api.memstash.io/values/DB_MIGRATION_STATUS_${CIRCLE_WORKFLOW_ID:0:7}
+            fi
+     # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+            workflowID: ${CIRCLE_WORKFLOW_ID:0:7}      
+
+
+
 workflows:
   default:
     jobs:
@@ -244,3 +280,5 @@ workflows:
               only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
