@@ -125,6 +125,7 @@ workflows:
       - build-backend
       - test-frontend:
           requires: [build-frontend]
+          context: udapeople
       - test-backend:
           requires: [build-backend]
       - scan-backend:
