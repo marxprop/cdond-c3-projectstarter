@@ -255,13 +255,11 @@ jobs:
               echo "Database migration has failed, verify DB setup!"
               curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-     # Here's where you will add some code to rollback on failure
       - destroy-environment:
             workflowID: ${CIRCLE_WORKFLOW_ID:0:7}      
 
   deploy-frontend:
     docker:
-      # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     steps:
       -checkout
@@ -309,7 +307,7 @@ jobs:
       -checkout
       - add_ssh_keys:
           fingerprints: 
-            - "e2:c9:22:04:6c:5c:91:d9:6b:fa:69:21:5b:be:a7:ad"
+            - "71:31:98:c1:a7:13:c5:3e:b0:0e:50:9a:a6:19:bd:91"
       - attach_workspace:
           at: .
       - restore_cache:
