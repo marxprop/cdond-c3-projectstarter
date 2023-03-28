@@ -19,7 +19,6 @@ jobs:
           paths: [frontend/node_modules]
           key: frontend-build
       - slack/notify:
-          branch_pattern: .+
           event: fail
           template: basic_fail_1
 
@@ -40,7 +39,6 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
       - slack/notify:
-          branch_pattern: .+
           event: fail
           template: basic_fail_1
 
@@ -58,7 +56,6 @@ jobs:
             npm i
             npm run test
       - slack/notify:
-          branch_pattern: .+
           event: fail
           template: basic_fail_1
 
@@ -75,7 +72,6 @@ jobs:
             cd ./backend
             npm run test
       - slack/notify:
-          branch_pattern: .+
           event: fail
           template: basic_fail_1
 
@@ -94,7 +90,6 @@ jobs:
             npm audit fix --force
             npm audit --audit-level=critical
       - slack/notify:
-          branch_pattern: .+
           event: fail
           template: basic_fail_1
 
@@ -113,9 +108,7 @@ jobs:
             npm audit fix --force
             npm audit --audit-level=critical
       - slack/notify:
-          branch_pattern: .+
           event: fail
-          channel: C050JHUBMNE
           template: basic_fail_1
 
 
