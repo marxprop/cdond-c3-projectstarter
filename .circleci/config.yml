@@ -211,7 +211,7 @@ jobs:
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
             echo "BACKEND_IP=${BACKEND_IP}"
-            curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/BACKEND_URL  -d 'http://$BACKEND_IP:3030'
+            curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7}  -d '$BACKEND_IP'
       - run:
           name: Add backend ip to ansible inventory
           working_directory: ./.circleci/ansible
@@ -361,6 +361,39 @@ jobs:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}  
+
+smoke-test:
+    docker:
+      # Lightweight Docker image
+      - image: alpine:latest 
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install dependencies
+          command: |
+            apk --no-cache add curl
+            apk add --update npm
+            apk add --no-cache python3 py3-pip \
+              && pip3 install --upgrade pip \
+              && pip install awscli
+      - create-dotenv-file
+      - run:
+          name: Backend smoke test.
+          command: |
+            BACKEND_IP=$(curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7)
+            API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            curl -s "${API_URL}/api/status" -v
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
+            curl -s ${URL} | grep "Welcome"
+      - destroy-environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
 
 workflows:
   default:
