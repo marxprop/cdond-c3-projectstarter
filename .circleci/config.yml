@@ -21,6 +21,7 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
 
   build-backend:
@@ -42,6 +43,7 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
 
   test-frontend:
@@ -60,6 +62,7 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
 
   test-backend:
@@ -77,6 +80,7 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
 
   scan-frontend:
@@ -95,6 +99,7 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
 
   scan-backend:
@@ -113,7 +118,9 @@ jobs:
       - slack/notify:
           branch_pattern: .+
           event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
+
 
 workflows:
   default:
