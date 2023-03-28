@@ -394,6 +394,7 @@ smoke-test:
       - destroy-environment:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}  
 
   cloudfront-update:
     docker:
