@@ -180,27 +180,50 @@ jobs:
       - destroy-environment:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}  
 
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - add_ssh_keys:
+          fingerprints: 
+            - "71:31:98:c1:a7:13:c5:3e:b0:0e:50:9a:a6:19:bd:91" 
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            pip install awscli
+      - create-dotenv-file
+      - run:
+          name: Configure server
+          command: |
+            pwd
+            cat ./.circleci/ansible/inventory.txt
+            export ANSIBLE_HOST_KEY_CHECKING=false
+            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/configure-server.yml
+      - destroy-environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}   
+
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context: slack-secrets
-      - build-backend:
-          context: slack-secrets
+      - build-frontend
+      - build-backend
       - test-frontend:
           requires: [build-frontend]
-          context: slack-secrets
       - test-backend:
           requires: [build-backend]
-          context: slack-secrets
       - scan-backend:
           requires: [build-backend]
-          context: slack-secrets
       - scan-frontend:
           requires: [build-frontend]
-          context: slack-secrets
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
               only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
