@@ -210,7 +210,7 @@ jobs:
             pwd
             BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:udapeople,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
             echo "BACKEND_IP=${BACKEND_IP}"
             curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7} -d $BACKEND_IP
@@ -220,7 +220,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:udapeople,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> inventory
             cat inventory
       - persist_to_workspace:
