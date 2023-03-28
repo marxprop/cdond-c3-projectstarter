@@ -33,6 +33,7 @@ commands:
           name: Destroy backend stack
           when: on_fail
           command: |
+            sudo apt-get update && sudo apt-get install -y awscli
             aws s3 rm s3://udapeople-<< parameters.workflowID >> --recursive
             aws s3 rb s3://udapeople-<< parameters.workflowID >> --force
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflowID >>
@@ -239,7 +240,7 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            d ./backend
+            cd ./backend
             pwd
             npm run migrations > migrations_log.txt
             cat ./migrations_log.txt
@@ -258,6 +259,52 @@ jobs:
       - destroy-environment:
             workflowID: ${CIRCLE_WORKFLOW_ID:0:7}      
 
+  deploy-frontend:
+    docker:
+      # Docker image here that supports AWS CLI
+      - image: amazon/aws-cli
+    steps:
+      # Checkout code from git
+      -checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip curl
+            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+            yum install -y nodejs
+      - attach_workspace:
+          at: .
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(curl -H "token: 7079126b-54c1-4ae1-b7cf-577d8a27c76f" --request GET https://api.memstash.io/values/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7})
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            echo ENVIRONMENT=production > "frontend/.env"
+            echo API_URL=${API_URL} >> "frontend/.env"
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          command: |
+            # your code here
+      # Here's where you will add some code to rollback on failure      
+                  
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+    steps:
+      # Checkout code from git
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Deploy backend
+          command: |
+            # your code here
+      # Here's where you will add some code to rollback on failure  
 
 
 workflows:
