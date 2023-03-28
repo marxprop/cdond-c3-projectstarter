@@ -1,6 +1,7 @@
 version: 2.1
+
 orbs:
-   slack: circleci/slack@4.11.0
+  slack: circleci/slack@4.11.0
 commands:
   create-dotenv-file:
     description: Create .env file
