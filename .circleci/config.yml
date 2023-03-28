@@ -54,7 +54,7 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1')
+            SUCCESS=$(curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/DB_MIGRATION_<< parameters.id >>)
             echo $SUCCESS
             if(( "$SUCCESS"=="success" )); 
             then
@@ -203,6 +203,16 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
+          name: Send backend IP to memstash
+          command: |
+            pwd
+            BACKEND_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text)
+            echo "BACKEND_IP=${BACKEND_IP}"
+            curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/BACKEND_URL  -d 'http://$BACKEND_IP:3030'
+      - run:
           name: Add backend ip to ansible inventory
           working_directory: ./.circleci/ansible
           command: |
@@ -269,10 +279,10 @@ jobs:
             if grep "has been executed successfully" ./backend/migrations_log.txt;
             then
               echo "Database migration has been executed successfully"
-              curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}  -d 'success'
             else
               echo "Database migration has failed, verify DB setup!"
-              curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7} -d 'failure'
             fi
       - destroy-environment:
             workflowID: ${CIRCLE_WORKFLOW_ID:0:7}      
@@ -293,7 +303,7 @@ jobs:
       - run:
           name: Get backend url and setup environment variables
           command: |
-            BACKEND_IP=$(curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1')
+            BACKEND_IP=$(curl https://kvdb.io/MPUxLuxEmWqP8xdPf3Mukn/BACKEND_URL)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             echo ENVIRONMENT=production > "frontend/.env"
