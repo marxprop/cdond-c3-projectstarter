@@ -128,7 +128,10 @@ workflows:
           context: udapeople
       - test-backend:
           requires: [build-backend]
+          context: udapeople
       - scan-backend:
           requires: [build-backend]
+          context: udapeople
       - scan-frontend:
           requires: [build-frontend]
+          context: udapeople
