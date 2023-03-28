@@ -18,6 +18,10 @@
         delay: 0
         timeout: 600
 
+  roles:
+    - configure-server
+    - configure-prometheus-node-exporter
+
   # Get the environment variables from CircleCI and add to the EC2 instance
   environment:
     ENVIRONMENT: production
@@ -30,7 +34,3 @@
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
     TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
     TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
-
-  roles:
-    - configure-server
-    - configure-prometheus-node-exporter
