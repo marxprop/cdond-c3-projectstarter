@@ -10,15 +10,15 @@ commands:
           name: Add env vars to .env file
           command: |
             echo ENVIRONMENT=$ENVIRONMENT > "./backend/.env"
-            echo TYPEORM_CONNECTION=$circleci env get TYPEORM_CONNECTION >> "./backend/.env"
-            echo TYPEORM_MIGRATIONS_DIR=$circleci env get TYPEORM_MIGRATIONS_DIR >> "./backend/.env"
-            echo TYPEORM_ENTITIES=$circleci env get TYPEORM_ENTITIES >> "./backend/.env"
-            echo TYPEORM_MIGRATIONS=$circleci env get TYPEORM_MIGRATIONS >> "./backend/.env"
-            echo TYPEORM_HOST=$circleci env get TYPEORM_HOST >> "./backend/.env"
-            echo TYPEORM_PORT=$circleci env get TYPEORM_PORT >> "./backend/.env"
-            echo TYPEORM_USERNAME=$circleci env get TYPEORM_USERNAME >> "./backend/.env"
-            echo TYPEORM_PASSWORD=$circleci env get TYPEORM_PASSWORD >> "./backend/.env"
-            echo TYPEORM_DATABASE=$circleci env get TYPEORM_DATABASE >> "./backend/.env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> "./backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "./backend/.env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "./backend/.env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "./backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "./backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "./backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "./backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "./backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "./backend/.env"
             cat "./backend/.env"
 
   destroy-environment:
