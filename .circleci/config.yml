@@ -19,8 +19,7 @@ commands:
             echo TYPEORM_USERNAME=$circleci env get TYPEORM_USERNAME >> "./backend/.env"
             echo TYPEORM_PASSWORD=$circleci env get TYPEORM_PASSWORD >> "./backend/.env"
             echo TYPEORM_DATABASE=$circleci env get TYPEORM_DATABASE >> "./backend/.env"
-            echo "$circleci env get TYPEORM_HOST"
-            echo $(circleci env get TYPEORM_HOST)
+            cat "./backend/.env"
 
   destroy-environment:
     description: Destroy backend and frontend cloudformation stacks given a workflow ID.
