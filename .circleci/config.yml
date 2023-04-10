@@ -364,6 +364,9 @@ jobs:
             apk add --no-cache openssh-client
             apk add --no-cache --upgrade bash
             pip install awscli
+            yum install -y tar gzip curl
+            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+            yum install -y nodejs
       - create-dotenv-file
       - run:
           name: Deploy backend
